@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Caja - Formato de Moneda</title>
+    <title>Sistema de Caja - Ajuste una Hoja</title>
     <style>
         :root {
             --navy: #1a2a40;
@@ -16,72 +16,85 @@
 
         body { font-family: 'Segoe UI', sans-serif; background-color: #d1d9e0; padding: 20px; transition: 0.3s; }
         .container { 
-            max-width: 1400px; margin: auto; background: white; padding: 30px; 
+            max-width: 1300px; margin: auto; background: white; padding: 25px; 
             border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        header { text-align: center; border-bottom: 3px solid var(--navy); margin-bottom: 30px; padding-bottom: 20px; }
-        header h1 { margin: 0 0 20px 0; color: var(--navy); text-transform: uppercase; letter-spacing: 2px; }
+        header { text-align: center; border-bottom: 3px solid var(--navy); margin-bottom: 15px; padding-bottom: 10px; }
+        header h1 { margin: 0 0 10px 0; color: var(--navy); text-transform: uppercase; letter-spacing: 2px; font-size: 1.5rem; }
         
-        .file-tools { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .file-tools { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 
-        /* MODO VISTA PREVIA */
-        body.preview-mode { background-color: #4a4e51; padding: 40px 0; }
+        /* MODO VISTA PREVIA (AJUSTADO PARA UNA HOJA) */
+        body.preview-mode { background-color: #4a4e51; padding: 20px 0; }
         body.preview-mode .container {
-            width: 27.9cm; min-height: 21.6cm; margin: auto; padding: 1.5cm;
+            width: 27.9cm; 
+            height: 21.6cm; /* Altura fija de hoja carta */
+            margin: auto; padding: 1cm;
             border-radius: 0; box-shadow: 0 0 40px rgba(0,0,0,0.7);
+            overflow: hidden; /* Evita que el contenido se desborde en la previa */
+            display: flex;
+            flex-direction: column;
         }
         body.preview-mode .no-print { display: none !important; }
 
         /* Configuración */
-        .config-area { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .box { background: var(--light); padding: 15px; border-radius: 8px; border-left: 5px solid var(--navy); border-top: 1px solid #ddd; }
-        .box h3 { margin: 0 0 10px 0; color: var(--navy); font-size: 0.85rem; text-transform: uppercase; }
-        .form-row { display: flex; gap: 8px; align-items: flex-end; }
+        .config-area { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-bottom: 15px; }
+        .box { background: var(--light); padding: 10px; border-radius: 8px; border-left: 5px solid var(--navy); border-top: 1px solid #ddd; }
+        .box h3 { margin: 0 0 5px 0; color: var(--navy); font-size: 0.75rem; text-transform: uppercase; }
+        .form-row { display: flex; gap: 5px; align-items: flex-end; }
         
-        /* Inputs */
-        input { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; width: 100%; }
+        input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; width: 100%; }
         .input-money { font-weight: bold; color: var(--navy); }
 
-        .btn { border: none; padding: 10px 16px; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
+        .btn { border: none; padding: 8px 12px; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
         .btn-navy { background-color: var(--navy); color: var(--gold); }
         .btn-gold { background-color: var(--gold); color: var(--navy); }
         .btn-red { background-color: var(--red); color: white; }
-        .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-        /* Tablas */
-        .table-wrap { overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { background-color: var(--navy); color: white; padding: 12px; border: 1px solid #333; }
-        td { padding: 10px; text-align: center; border: 1px solid #ddd; font-weight: bold; }
-        .nombre-col { text-align: left; color: var(--navy); cursor: pointer; min-width: 160px; background: #fafafa; }
+        /* Tablas Optimizadas */
+        .table-wrap { overflow-x: auto; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        th { background-color: var(--navy); color: white; padding: 8px; border: 1px solid #333; }
+        td { padding: 6px; text-align: center; border: 1px solid #ddd; font-weight: bold; }
+        .nombre-col { text-align: left; color: var(--navy); cursor: pointer; min-width: 140px; background: #fafafa; }
 
         .pagado { color: var(--green); background-color: #ecfdf5; }
         .atrasado { color: var(--orange); background-color: #fffbeb; }
         .vencido { color: var(--red); background-color: #fef2f2; }
 
-        /* Dashboard */
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 25px; }
-        .card { background: var(--navy); color: var(--gold); padding: 15px; border-radius: 8px; text-align: center; }
-        .card span { display: block; font-size: 1.5rem; color: white; margin-top: 5px; }
-        .card.neto { background: var(--gold); color: var(--navy); border: 2px solid var(--navy); }
+        /* Dashboard Compacto */
+        .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .card { background: var(--navy); color: var(--gold); padding: 10px; border-radius: 8px; text-align: center; }
+        .card span { display: block; font-size: 1.1rem; color: white; margin-top: 2px; }
+        .card.neto { background: var(--gold); color: var(--navy); border: 1px solid var(--navy); }
         .card.neto span { color: var(--navy); font-weight: 800; }
 
         #exit-preview { 
-            position: fixed; top: 15px; left: 15px; z-index: 1000; 
-            display: none; background: var(--red); color: white; padding: 12px 20px; 
+            position: fixed; top: 10px; left: 10px; z-index: 1000; 
+            display: none; background: var(--red); color: white; padding: 8px 15px; 
             border-radius: 6px; font-weight: bold; cursor: pointer; border: none;
         }
 
+        /* AJUSTES CRÍTICOS PARA IMPRESIÓN EN UNA HOJA */
         @media print {
             @page { size: letter landscape; margin: 0.5cm; }
-            body { background: white !important; padding: 0 !important; }
-            .container { width: 100% !important; margin: 0 !important; box-shadow: none !important; border: none !important; padding: 0 !important; }
+            html, body { height: 100%; width: 100%; background: white !important; padding: 0 !important; margin: 0 !important; }
+            .container { 
+                width: 100% !important; max-width: 100% !important; 
+                margin: 0 !important; padding: 0 !important;
+                box-shadow: none !important; border: none !important;
+                transform: scale(0.95); /* Escala ligeramente para asegurar margen */
+                transform-origin: top center;
+            }
             .no-print, #exit-preview, .btn-move, th:last-child, td:last-child { display: none !important; }
-            th { background-color: #f0f0f0 !important; color: black !important; border: 1px solid #000 !important; }
-            td { border: 1px solid #000 !important; }
-            .card { border: 2px solid #000 !important; color: black !important; background: white !important; }
-            .card span { color: black !important; }
+            th { background-color: #e0e0e0 !important; color: black !important; border: 1px solid #000 !important; }
+            td { border: 1px solid #000 !important; padding: 4px !important; }
+            .dashboard { margin-top: 10px !important; gap: 5px !important; }
+            .card { border: 1px solid #000 !important; background: white !important; color: black !important; padding: 5px !important; }
+            .card span { color: black !important; font-size: 1rem !important; }
+            h3 { margin-top: 10px !important; font-size: 0.9rem !important; }
+            table { page-break-inside: avoid; }
         }
     </style>
 </head>
@@ -91,10 +104,10 @@
 
 <div class="container">
     <header>
-        <h1>Control de Recaudación y Libro de Caja</h1>
+        <h1>Control de cuotas Cenmeteopmo y Libro de Caja</h1>
         <div class="file-tools no-print">
-            <button class="btn btn-navy" onclick="descargarData()">💾 RESPALDAR DATOS</button>
-            <button class="btn btn-navy" onclick="document.getElementById('fileInput').click()">📂 CARGAR ARCHIVO</button>
+            <button class="btn btn-navy" onclick="descargarData()">💾 RESPALDAR</button>
+            <button class="btn btn-navy" onclick="document.getElementById('fileInput').click()">📂 CARGAR</button>
             <button class="btn btn-gold" onclick="togglePreview()">👁️ VISTA PREVIA (CARTA)</button>
             <button class="btn btn-navy" onclick="window.print()">🖨️ IMPRIMIR / PDF</button>
             <input type="file" id="fileInput" style="display:none" onchange="cargarData(event)">
@@ -103,25 +116,25 @@
 
     <div class="config-area no-print">
         <div class="box">
-            <h3>Saldo Inicial Años Anteriores</h3>
+            <h3>Fondo Inicial</h3>
             <div class="form-row">
-                <input type="text" id="saldoGlobalInput" class="input-money" placeholder="Ej: 50.000" oninput="formatInput(this)">
-                <button class="btn btn-gold" onclick="actualizarSaldoGlobal()">EDITAR</button>
+                <input type="text" id="saldoGlobalInput" class="input-money" oninput="formatInput(this)">
+                <button class="btn btn-gold" onclick="actualizarSaldoGlobal()">SET</button>
             </div>
         </div>
         <div class="box">
-            <h3>Nueva Persona</h3>
+            <h3>Persona Nueva</h3>
             <div class="form-row">
                 <input type="text" id="nombreInput" placeholder="Nombre" style="flex:2">
-                <input type="text" id="montoInput" class="input-money" placeholder="$ Cuota" style="flex:1" oninput="formatInput(this)">
+                <input type="text" id="montoInput" class="input-money" placeholder="$" style="flex:1" oninput="formatInput(this)">
                 <button class="btn btn-navy" onclick="agregarPersona()">OK</button>
             </div>
         </div>
         <div class="box" style="border-left-color: var(--red);">
-            <h3>Registrar Gasto / Egreso</h3>
+            <h3>Gasto</h3>
             <div class="form-row">
-                <input type="text" id="motivoGasto" placeholder="¿En qué se ocupó?" style="flex:2">
-                <input type="text" id="montoGasto" class="input-money" placeholder="$ Valor" style="flex:1" oninput="formatInput(this)">
+                <input type="text" id="motivoGasto" placeholder="Motivo" style="flex:2">
+                <input type="text" id="montoGasto" class="input-money" placeholder="$" style="flex:1" oninput="formatInput(this)">
                 <button class="btn btn-red" onclick="agregarGasto()">-</button>
             </div>
         </div>
@@ -131,10 +144,10 @@
         <table>
             <thead>
                 <tr>
-                    <th>Persona / Cuota Mensual</th>
+                    <th>Persona / Cuota</th>
                     <th>Mar</th><th>Abr</th><th>May</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dic</th>
-                    <th>Total Pagado</th>
-                    <th class="no-print">Gestión</th>
+                    <th>Total</th>
+                    <th class="no-print">🔧</th>
                 </tr>
             </thead>
             <tbody id="listaCuerpo"></tbody>
@@ -142,17 +155,17 @@
     </div>
 
     <div class="dashboard">
-        <div class="card">FONDO ANTERIOR GLOBAL<span id="displayAnterior">$0</span></div>
-        <div class="card">RECAUDACIÓN AÑO ACTUAL<span id="displayActual">$0</span></div>
-        <div class="card" style="background:#c0392b;">TOTAL EGRESOS / GASTOS<span id="displayGastos">$0</span></div>
-        <div class="card neto">TOTAL NETO DISPONIBLE EN CAJA<span id="displayGranTotal">$0</span></div>
+        <div class="card">FONDO ANTERIOR<span id="displayAnterior">$0</span></div>
+        <div class="card">RECAUDADO 2026<span id="displayActual">$0</span></div>
+        <div class="card" style="background:#c0392b;">TOTAL GASTOS<span id="displayGastos">$0</span></div>
+        <div class="card neto">NETO CAJA<span id="displayGranTotal">$0</span></div>
     </div>
 
-    <div style="margin-top: 30px;">
-        <h3>Detalle de Gastos realizados</h3>
-        <div class="table-wrap" style="max-width: 600px;">
+    <div style="margin-top: 15px;">
+        <h3 style="font-size: 0.8rem; margin-bottom: 5px;">Detalle de Gastos</h3>
+        <div class="table-wrap" style="max-width: 500px;">
             <table>
-                <thead><tr><th>Descripción</th><th>Monto</th><th class="no-print">Borrar</th></tr></thead>
+                <thead><tr><th>Descripción</th><th>Monto</th><th class="no-print">X</th></tr></thead>
                 <tbody id="listaGastos"></tbody>
             </table>
         </div>
@@ -160,9 +173,9 @@
 </div>
 
 <script>
-    let personas = JSON.parse(localStorage.getItem('c_p_v3')) || [];
-    let gastos = JSON.parse(localStorage.getItem('c_g_v3')) || [];
-    let saldoGlobal = parseFloat(localStorage.getItem('c_s_v3')) || 0;
+    let personas = JSON.parse(localStorage.getItem('c_p_v_final')) || [];
+    let gastos = JSON.parse(localStorage.getItem('c_g_v_final')) || [];
+    let saldoGlobal = parseFloat(localStorage.getItem('c_s_v_final')) || 0;
     const mesesIndices = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
     const CLAVE = "123";
 
@@ -171,33 +184,20 @@
         renderizar();
     };
 
-    // FUNCIÓN PARA FORMATEAR MIENTRAS ESCRIBES
     function formatInput(input) {
-        let value = input.value.replace(/\D/g, ""); // Quita todo lo que no sea número
+        let value = input.value.replace(/\D/g, "");
         if (value === "") { input.value = ""; return; }
         input.value = new Intl.NumberFormat('es-CL').format(value);
     }
 
-    // Convierte el texto "6.000" a número 6000
-    function cleanNumber(str) {
-        return parseFloat(str.replace(/\./g, "")) || 0;
-    }
-
-    // Convierte número 6000 a texto "6.000"
-    function formatNumber(num) {
-        return new Intl.NumberFormat('es-CL').format(num);
-    }
+    function cleanNumber(str) { return parseFloat(str.replace(/\./g, "")) || 0; }
+    function formatNumber(num) { return new Intl.NumberFormat('es-CL').format(num); }
 
     function actualizarSaldoGlobal() {
-        const inputVal = document.getElementById('saldoGlobalInput').value;
-        const nuevoValor = cleanNumber(inputVal);
-        
-        if (prompt("Ingrese clave de administrador para modificar el saldo histórico:") === CLAVE) {
-            saldoGlobal = nuevoValor;
-            guardar();
-            alert("Saldo inicial actualizado correctamente.");
+        const val = cleanNumber(document.getElementById('saldoGlobalInput').value);
+        if (prompt("Clave Admin:") === CLAVE) {
+            saldoGlobal = val; guardar();
         } else {
-            alert("Clave incorrecta.");
             document.getElementById('saldoGlobalInput').value = formatNumber(saldoGlobal);
         }
     }
@@ -256,7 +256,7 @@
         const blob = new Blob([JSON.stringify(d)], {type:'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `Caja_Naval_Respaldo.json`;
+        a.download = `Caja_Naval.json`;
         a.click();
     }
 
@@ -272,9 +272,9 @@
     }
 
     function guardar() {
-        localStorage.setItem('c_p_v3', JSON.stringify(personas));
-        localStorage.setItem('c_g_v3', JSON.stringify(gastos));
-        localStorage.setItem('c_s_v3', saldoGlobal);
+        localStorage.setItem('c_p_v_final', JSON.stringify(personas));
+        localStorage.setItem('c_g_v_final', JSON.stringify(gastos));
+        localStorage.setItem('c_s_v_final', saldoGlobal);
         renderizar();
     }
 
@@ -286,7 +286,7 @@
         const hoy = new Date(), mAct = hoy.getMonth(), dAct = hoy.getDate();
 
         personas.forEach((p, idx) => {
-            let tP = 0, cels = `<td class="nombre-col" onclick="editarNom(${p.id})">${p.nombre}<br><small>$${formatNumber(p.monto)}</small></td>`;
+            let tP = 0, cels = `<td class="nombre-col" onclick="editarNom(${p.id})">${p.nombre}</td>`;
             p.pagos.forEach((pag, i) => {
                 const mRef = mesesIndices[i];
                 let cls = "", ico = "➖";
@@ -302,7 +302,7 @@
                 <td class="no-print">
                     <button onclick="mover(${idx},-1)">↑</button>
                     <button onclick="mover(${idx},1)">↓</button>
-                    <button onclick="eliminarPersona(${p.id})" style="border:none;background:none;cursor:pointer;">🗑️</button>
+                    <button onclick="eliminarPersona(${p.id})">🗑️</button>
                 </td></tr>`;
         });
 
